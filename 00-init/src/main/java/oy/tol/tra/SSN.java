@@ -97,16 +97,16 @@ public class SSN {
             if (null != century) {
                // String had correct separator indicating century of date of birth; one of
                // those allowed before ("+-A") and the new ones taken into use in 2023.
-               String personNumberString = ssn.substring(PERSON_CODE_INDEX_START,
-                     PERSON_CODE_INDEX_START + PERSON_CODE_LENGTH);
+               String personNumberString = ssn.substring(PERSON_CODE_INDEX_START,PERSON_CODE_INDEX_START + PERSON_CODE_LENGTH);
+               String numericString = personNumberString.replaceAll("[^0-9]", ""); 
                // Next checking the three digit number after the century separator.
-               Integer personNumber = Integer.parseInt(personNumberString);
+               Integer personNumber = Integer.parseInt(numericString);
                if (personNumber > 0) {
                   // If it was a positive integer, then calculate the checksum.
                   StringBuilder builder = new StringBuilder();
                   builder.append(ssn.substring(0, DDMM_PART_END_SUBSTRING_INDEX));
                   builder.append(ssn.substring(4, DATE_PART_END_SUBSTRING_INDEX));
-                  builder.append(personNumberString);
+                  builder.append(numericString);
                   String checkSumString = builder.toString();
                   Long checkSum = Long.parseLong(checkSumString) % CHECK_CODE_DIVIDER;
                   if (CHECKCHARS.charAt(checkSum.intValue()) == ssn.charAt(CHECKCODE_INDEX)) {
