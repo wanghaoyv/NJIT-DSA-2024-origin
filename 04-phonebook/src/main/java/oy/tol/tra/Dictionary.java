@@ -37,18 +37,24 @@ public interface Dictionary<K extends Comparable<K>, V> {
    Type getType();
 
    /**
-    * Ensures the (possible) internal array implementation has room for at least for {@code size}
-    * number of elements. Otherwise, the internal array must be reallocated, grown. 
+    * Ensures the (possible) internal array implementation has room for at least
+    * for {@code size}
+    * number of elements. Otherwise, the internal array must be reallocated, grown.
     * 
-    * Calling this method removed all elements from the Dictionary internal array. Do not call
-    * this method to reallocate and keep existing elements. Use a private method you implement for that.
-    * This method is only used when you have created an empty Dictionary and then you need to ensure
+    * Calling this method removed all elements from the Dictionary internal array.
+    * Do not call
+    * this method to reallocate and keep existing elements. Use a private method
+    * you implement for that.
+    * This method is only used when you have created an empty Dictionary and then
+    * you need to ensure
     * a non-default capacity.
     *
-    * Note that implementations not based on arrays (e.g. binary search tree, linked list)
+    * Note that implementations not based on arrays (e.g. binary search tree,
+    * linked list)
     * do not need to reserve capacity. For these, this method does nothing.
     *
-    * @param size The number of elements the Dictionary can hold without reallocation.
+    * @param size The number of elements the Dictionary can hold without
+    *             reallocation.
     * @throws OutOfMemoryError Throws if memory runs out.
     */
    void ensureCapacity(int size) throws OutOfMemoryError;
@@ -59,16 +65,19 @@ public interface Dictionary<K extends Comparable<K>, V> {
     * The type K must implement hashCode, used in inserting and searching.
     *
     * Note that if a key already exists in the dictionary, the key-value pair
-    * must be replaced with the new pair from the parameters. That is, the dictionary must not contain
-    * duplicate keys. Note, however, that different keys may have the same hash value,
-    * so always compare the elements with the same hash using `equals` to check if the
+    * must be replaced with the new pair from the parameters. That is, the
+    * dictionary must not contain
+    * duplicate keys. Note, however, that different keys may have the same hash
+    * value,
+    * so always compare the elements with the same hash using `equals` to check if
+    * the
     * keys are actually the same.
     *
-    * @param key The key value to use in adding elements. Must not be null.
+    * @param key   The key value to use in adding elements. Must not be null.
     * @param value The associated value for the key. Must not be null;
     * @return Returns true if the key-value pair was added to the Dictionary.
     * @throws IllegalArgumentException Throws if key or value is null.
-    * @throws OutOfMemoryError Throws if memory runs out.
+    * @throws OutOfMemoryError         Throws if memory runs out.
     */
    boolean add(K key, V value) throws IllegalArgumentException, OutOfMemoryError;
 
@@ -83,6 +92,7 @@ public interface Dictionary<K extends Comparable<K>, V> {
 
    /**
     * Returns the number of elements in the Dictionary.
+    * 
     * @return The number of elements in the collection.
     */
    int size();
@@ -96,13 +106,16 @@ public interface Dictionary<K extends Comparable<K>, V> {
    String getStatus();
 
    /**
-    * Returns the contents of the dictionary sorted by ascending key order in a new array.
-    * The contents of the Dictionary's (possible) internal data structure are not to be
+    * Returns the contents of the dictionary sorted by ascending key order in a new
+    * array.
+    * The contents of the Dictionary's (possible) internal data structure are not
+    * to be
     * sorted nor changed in any way.
     * The array must contain only valid elements (not nulls, for example).
+    * 
     * @return The contents of the Dictionary as an array sorted by key value.
     */
-   Pair<K,V> [] toSortedArray();
+   Pair<K, V>[] toSortedArray();
 
    /**
     * Compresses the internal array so that the array contains only
