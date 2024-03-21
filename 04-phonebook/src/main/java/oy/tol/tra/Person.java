@@ -32,16 +32,13 @@ public class Person implements Comparable<Person> {
     }
 
     /**
-     * TODO: Implement the method below to return a hash value. It must be calculated from the
      * first and last name of the person.
      * 
      * @return Hash value of the person.
      */
     @Override
     public int hashCode() {
-        int hash = 5381;
-        // Implement hash function here.
-        return hash;
+        return getFullName().hashCode()%100000000;
     }
 
     @Override
@@ -51,6 +48,7 @@ public class Person implements Comparable<Person> {
         }
         return false;
     }
+   
 
     /**
      * Compares two persons, this and the other one.
