@@ -1,113 +1,94 @@
 package oy.tol.tra;
-import java.util.ArrayList;
 
-public class QueueImplementation<T> implements QueueInterface<T> {
-
-    private ArrayList<T> queue;
+public class QueueImplementation<E> implements QueueInterface<E> {
+    private Object[] itemArray;
     private int capacity;
-    private int top1;
-    private int top2;
-    private int size;
-   
+    private int currentSize = 0;
+    private int head = 0;
+    private int tail = -1;
 
-    public QueueImplementation(int capacity) {
-        this.queue = new ArrayList<>(capacity);
+    public QueueImplementation() throws QueueAllocationException {
+        capacity = 10;
+        itemArray = new Object[10];
+    }
+
+    public QueueImplementation(int capacity) throws QueueAllocationException {
+        if (capacity < 2) {
+            throw new QueueAllocationException("Capacity is too small!");
+        }
         this.capacity = capacity;
-        top1=0;
-        top2=-1;
-        size=0;
-      
+        itemArray = new Object[capacity];
     }
 
-    
     public int capacity() {
-        return capacity;
+        return this.capacity;
     }
 
-    
-    public void enqueue(T one) throws QueueAllocationException, NullPointerException {
-        if (one == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-        if (size == capacity) {
-            int newCapacity = capacity*2;
-            ArrayList<T>newArrayList = new ArrayList<>(newCapacity);
-            for(int i = 0 ;i < size ;i++){
-                int index = (top1 +i) % capacity;
-                newArrayList.add(queue.get(index));
+    public void enqueue(E element) throws QueueAllocationException, NullPointerException {
+        if (currentSize == capacity) {
+            Object[] tmp = new Object[this.capacity * 2 + 1];
+            int idxOfItemArray = head;
+            int idxOfTmp = 0;
+            int loopTime = currentSize;
+            while (loopTime-- > 0) {
+                tmp[idxOfTmp++] = itemArray[idxOfItemArray];
+                idxOfItemArray = (idxOfItemArray + 1) % capacity;
             }
-            queue = newArrayList;
-            capacity = newCapacity;
-            top1=0;
-            top2=size-1;
+            head = 0;
+            tail = idxOfTmp - 1;
+            itemArray = tmp;
+            capacity = capacity * 2 + 1;
         }
-        top2 = (top2 + 1)%capacity;
-        if(top2==queue.size()){
-          queue.add(one);
-         
-          
+        if (element == null) {
+            throw new NullPointerException();
         }
-        else{
-            queue.set(top2, one);
-        }
-        size++;
+        tail = (tail + 1) % capacity;
+        itemArray[tail] = element;
+        currentSize++;
     }
 
-    
-    public T dequeue() throws QueueIsEmptyException {
+    public E dequeue() throws QueueIsEmptyException {
+        E returnE = element();
+        itemArray[head] = null;
+        head = (head + 1) % capacity;
+        currentSize--;
+        return returnE;
+    }
+
+    public E element() throws QueueIsEmptyException {
         if (isEmpty()) {
             throw new QueueIsEmptyException("Queue is empty");
         }
-        T one = queue.get(top1);
-        top1 = (top1 + 1)%capacity;
-        size--;
-
-        if(size == 0){
-            top1 = 0;
-            top2 = -1;
-        }
-        return one;
+        return (E) itemArray[head];
     }
 
-    
-    public T element() throws QueueIsEmptyException {
-        if (top2 == -1) {
-            throw new QueueIsEmptyException("Queue is empty");
-        }
-        return queue.get(top1);
-    }
-
-  
     public int size() {
-        return size;
+        return currentSize;
     }
 
-    
     public boolean isEmpty() {
-        return (size == 0);
+        return currentSize == 0;
     }
 
-   
     public void clear() {
-        top1 = 0;
-        top2 = -1;
-        size = 0;
-        
+        head = 0;
+        tail = -1;
+        currentSize = 0;
+        itemArray = new Object[capacity];
     }
 
-
-    
     public String toString() {
-       StringBuilder builder = new StringBuilder("[");
-       for (int i = 0;i<size ; i++) {
-        int index = (i + top1) % capacity;
-          builder.append(queue.get(index));
-          if (i < size - 1) {
-             builder.append(", ");
-          }
-       }
-       builder.append("]");
-       return builder.toString();
+        StringBuilder builder = new StringBuilder("[");
+        int idxOfItemArray = head;
+        int loopTime = currentSize;
+        while (loopTime-- > 0) {
+            builder.append(itemArray[idxOfItemArray].toString());
+            idxOfItemArray = (idxOfItemArray + 1) % capacity;
+            if (loopTime != 0) {
+                builder.append(", ");
+            }
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }
-
