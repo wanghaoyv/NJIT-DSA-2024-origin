@@ -1,9 +1,6 @@
 package oy.tol.tra;
 
-
 public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary<K, V> {
-
-    // This should implement a hash table.
 
     private Pair<K, V>[] values = null;
     private int count = 0;
@@ -33,7 +30,6 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
         if (capacity < DEFAULT_CAPACITY) {
             capacity = DEFAULT_CAPACITY;
         }
-        // Assuming capacity means the count of elements to add, so multiplying by fill factor.
         values = (Pair<K, V>[]) new Pair[(int) ((double) capacity * (1.0 + LOAD_FACTOR))];
         reallocationCount = 0;
         count = 0;
@@ -43,20 +39,10 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
 
     @Override
     public int size() {
+        // TODO: Implement this.
         return count;
     }
 
-    /**
-     * Prints out the statistics of the hash table.
-     * Here you should print out member variable information which tell something
-     * about your implementation.
-     * <p>
-     * For example, if you implement this using a hash table, update member
-     * variables of the class (int counters) in add() whenever a collision
-     * happen. Then print this counter value here.
-     * You will then see if you have too many collisions. It will tell you that your
-     * hash function is not good.
-     */
     @Override
     public String getStatus() {
         StringBuilder builder = new StringBuilder();
@@ -71,29 +57,29 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
 
     @Override
     public boolean add(K key, V value) throws IllegalArgumentException, OutOfMemoryError {
-        // Remeber to check for null values.
         
         if(key==null||value==null)
         {
             throw new IllegalArgumentException();
         }
+        int wei=Math.abs(key.hashCode())%values.length;
         if (((double)count * (1.0 + LOAD_FACTOR)) >= values.length) {
             reallocate((int)((double)(values.length) * (1.0 / LOAD_FACTOR)));
         }
         
-        if(values[Math.abs(key.hashCode())%values.length]==null)
+        if(values[wei]==null)
         {
-             values[Math.abs(key.hashCode())%values.length]=new Pair<K,V>(key, value);
+             values[wei]=new Pair<K,V>(key, value);
              count++;
         }
-        else if(values[Math.abs(key.hashCode())%values.length]!=null&&values[Math.abs(key.hashCode())%values.length].getKey().equals(key))
+        else if(values[wei]!=null&&values[wei].getKey().equals(key))
         {
-            values[Math.abs(key.hashCode())%values.length].setValue(value);
+            values[wei].setValue(value);
         }
         
-        else if(values[Math.abs(key.hashCode())%values.length]!=null&&!values[Math.abs(key.hashCode())%values.length].getKey().equals(key))
+        else if(values[wei]!=null&&!values[wei].getKey().equals(key))
         {
-            for(int i=Math.abs(key.hashCode())%values.length+1;i<values.length;i++)
+            for(int i=wei+1;i<values.length;i++)
             {
                if(values[i]==null)
                {
@@ -109,36 +95,29 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
             }
             er=true;
         }
-        // Checks if the LOAD_FACTOR has been exceeded --> if so, reallocates to a bigger hashtable.
-       
-        // Remember to get the hash key from the Person,
-        // hash table computes the index for the Person (based on the hash value),
-        // if index was taken by different Person (collision), get new hash and index,
-        // insert into table when the index has a null in it,
-        // return true if existing Person updated or new Person inserted.
-        
+      
         return true;
     }
 
 
     @Override
     public V find(K key) throws IllegalArgumentException {
-        // Remember to check for null.
         if(key==null)
         {
             throw new IllegalArgumentException();
         }
-        if(values[Math.abs(key.hashCode())%values.length]==null)
+        int cha=Math.abs(key.hashCode())%values.length;
+        if(values[cha]==null)
         {
             return null;
         }
          else
           {
-             if (key.equals(values[Math.abs(key.hashCode())%values.length].getKey())) {
-        return values[Math.abs(key.hashCode())%values.length].getValue();
+             if (key.equals(values[cha].getKey())) {
+        return values[cha].getValue();
     }
     else{
-        for(int i=Math.abs(key.hashCode())%values.length+1;i<values.length;i++)
+        for(int i=cha+1;i<values.length;i++)
         {
             if(values[i]==null){
                  return null;
@@ -151,7 +130,6 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
     }
           }
           
-        // Must use same method for computing index as add method
         return null;
         
         
@@ -167,7 +145,7 @@ public class KeyValueHashTable<K extends Comparable<K>, V> implements Dictionary
               sorted[newIndex++] = new Pair<>(values[index].getKey(), values[index].getValue());
            }
         }
-       Algorithms.mergeSort(sorted);
+       Algorithms.fastSort(sorted);
         
         return sorted;
       }
